@@ -1,0 +1,46 @@
+-----------------------------------------------------
+ Como compilar:
+Abra o terminal e entre na pasta com os arquivos .java, então execute:
+
+    javac Main.java UdpServer.java DeviceInfo.java MensageHandler.java
+
+Verifique se os arquivos .class foram gerados com:
+
+    dir *.class
+
+-----------------------------------------------------
+ Como executar uma instância padrão (porta 50000):
+
+    java Main
+
+ Como executar uma segunda instância (porta 50001):
+
+    java Main 50001
+
+Essas instâncias simularão dois dispositivos se comunicando.
+
+-----------------------------------------------------
+ Comandos disponíveis após a execução:
+
+- devices
+    Lista os dispositivos ativos na rede com IP, porta e tempo desde o último heartbeat.
+
+- talk <nome> <mensagem>
+    Envia uma mensagem ao dispositivo <nome>.
+
+    Exemplo:
+    talk DESKTOP-001 Olá mundo
+
+Se o dispositivo estiver online, será exibido um ACK de confirmação.
+
+-----------------------------------------------------
+ Exemplo completo de teste (em 2 terminais):
+
+Terminal 1:
+    java Main 50000
+
+Terminal 2:
+    java Main 50001
+
+Depois de alguns segundos, digite `devices` em qualquer um para ver o outro.
+-----------------------------------------------------
