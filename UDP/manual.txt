@@ -33,6 +33,15 @@ Essas instâncias simularão dois dispositivos se comunicando.
 
 Se o dispositivo estiver online, será exibido um ACK de confirmação.
 
+- sendfile <nome> <nome-do-arquivo>
+    Envia um arquivo para o dispositivo <nome>.
+
+    Exemplo:
+    sendfile DESKTOP-002 documento.txt
+
+    O destinatário receberá o arquivo como: `recebido_documento.txt`
+    O hash SHA-256 será calculado para verificar integridade.
+
 -----------------------------------------------------
  Exemplo completo de teste (em 2 terminais):
 
@@ -43,4 +52,16 @@ Terminal 2:
     java Main 50001
 
 Depois de alguns segundos, digite `devices` em qualquer um para ver o outro.
+-----------------------------------------------------
+
+Sobre transferência de arquivos:
+- O remetente envia:
+  - FILE <id> <nome> <tamanho>
+  - vários CHUNKs codificados em base64
+  - END <id> <hash>
+
+- O receptor armazena os blocos em memória, escreve no disco e valida o hash.
+
+- Se o hash for inválido, o arquivo é descartado.
+
 -----------------------------------------------------

@@ -7,7 +7,7 @@ public class DeviceInfo {
     int porta;
     long timestamp;
 
-    public DeviceInfo(InetAddress ip, String nome, int porta, long timestamp) {
+    public DeviceInfo( String nome,InetAddress ip , int porta, long timestamp) {
         this.ip = ip;
         this.nome = nome;
         this.porta = porta;
