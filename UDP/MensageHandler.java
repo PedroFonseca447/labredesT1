@@ -11,7 +11,7 @@ public class MensageHandler { // quem vai processar as mensagens recebidas via u
             else if( msg.startsWith("TALK")){
                 String[] talkMessage = msg.split(" ",3);
                 System.out.println("Recebido " + talkMessage[2]);//o conteudo da msg
-                String ack = "ACK" + talkMessage[1];
+                String ack = "ACK " + talkMessage[1];
                 server.sendMessage(ack,address,port);//registra o ack de quem enviou
             } else if(msg.startsWith("ACK")){
                 String idMsg = msg.split(" ", 2)[1];
