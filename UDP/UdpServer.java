@@ -190,8 +190,8 @@ public class UdpServer {
         return sb.toString();
     }
 
-    public void iniciarRecepcaoArquivo(String id, String nomeArquivo) {
-        recebendoArquivos.put(id, new RecepcaoArquivo(nomeArquivo));
+    public void iniciarRecepcaoArquivo(String id, String nomeArquivo, InetAddress ip, int porta) {
+        recebendoArquivos.put(id, new RecepcaoArquivo(nomeArquivo, ip, porta));
     }
 
     public void adicionarChunkArquivo(String id, int seq, byte[] dados) {
@@ -201,14 +201,21 @@ public class UdpServer {
         }
     }
 
-    public void finalizarRecepcaoArquivo(String id, String hash) {
+    public void finalizarRecepcaoArquivo(String id, String hash) throws IOException {
         RecepcaoArquivo rec = recebendoArquivos.get(id);
         if (rec != null) {
-            rec.hashEsperado = hash;
             try {
-                rec.salvarEValidar();
+                boolean hashValido = rec.salvarEValidar(hash); // Método alterado para retornar boolean
+                if (hashValido) {
+                    String ack = "ACK " + id;
+                    sendMessage(ack, rec.ipDestino, rec.portaDestino); // Você precisará armazenar IP/porta no RecepcaoArquivo
+                } else {
+                    String nack = "NACK " + id + " HASH_INVALIDO";
+                    sendMessage(nack, rec.ipDestino, rec.portaDestino);
+                }
             } catch (Exception e) {
-                System.out.println("[!] Erro ao salvar o arquivo recebido.");
+                String nack = "NACK " + id + " ERRO_SERVIDOR";
+                sendMessage(nack, rec.ipDestino, rec.portaDestino);
             }
             recebendoArquivos.remove(id);
         }
@@ -217,17 +224,21 @@ public class UdpServer {
     private static class RecepcaoArquivo {
         String nomeArquivo;
         Map<Integer, byte[]> blocos = new TreeMap<>();
-        String hashEsperado;
+        //String hashEsperado;
+        InetAddress ipDestino;
+        int portaDestino;
 
-        RecepcaoArquivo(String nomeArquivo) {
+        RecepcaoArquivo(String nomeArquivo, InetAddress ipDestino, int portaDestino) {
             this.nomeArquivo = nomeArquivo;
+            this.ipDestino = ipDestino;
+            this.portaDestino = portaDestino;
         }
 
         void adicionarChunk(int seq, byte[] dados) {
             blocos.put(seq, dados);
         }
 
-        void salvarEValidar() throws Exception {
+        boolean salvarEValidar(String hashEsperado) throws Exception {
             File arquivo = new File("recebido_" + nomeArquivo);
             try (FileOutputStream fos = new FileOutputStream(arquivo)) {
                 for (byte[] bloco : blocos.values()) {
@@ -235,12 +246,7 @@ public class UdpServer {
                 }
             }
             String hashRecebido = calcularHash(arquivo);
-            if (hashRecebido.equals(hashEsperado)) {
-                System.out.println("[✓] Arquivo salvo com sucesso e hash válido.");
-            } else {
-                System.out.println("[X] Arquivo corrompido (hash inválido).");
-                arquivo.delete();
-            }
+            return hashRecebido.equals(hashEsperado);
         }
 
         private String calcularHash(File file) throws Exception {

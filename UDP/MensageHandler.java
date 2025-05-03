@@ -10,7 +10,7 @@ public class MensageHandler { // quem vai processar as mensagens recebidas via u
             }
             else if( msg.startsWith("TALK")){
                 String[] talkMessage = msg.split(" ",3);
-                System.out.println("Recebido " + talkMessage[2]);//o conteudo da msg
+                System.out.println("Recebido: " + talkMessage[2]);//o conteudo da msg
                 String ack = "ACK " + talkMessage[1];
                 server.sendMessage(ack,address,port);//registra o ack de quem enviou
             } else if(msg.startsWith("ACK")){
@@ -20,7 +20,7 @@ public class MensageHandler { // quem vai processar as mensagens recebidas via u
                 String[] partes = msg.split(" ", 4);
                 String id = partes[1];
                 String nomeArquivo = partes[2];
-                server.iniciarRecepcaoArquivo(id, nomeArquivo);
+                server.iniciarRecepcaoArquivo(id, nomeArquivo, address, port);
 
             } else if (msg.startsWith("CHUNK")) {
                 String[] partes = msg.split(" ", 4);
