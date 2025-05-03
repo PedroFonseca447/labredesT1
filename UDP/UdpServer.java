@@ -71,7 +71,7 @@ public class UdpServer {
         socket.send(packet);
     }
 
-    public void sendMensage(String mensagem, InetAddress ip, int porta) throws IOException {
+    public void sendMessage(String mensagem, InetAddress ip, int porta) throws IOException {
         byte[] buffer = mensagem.getBytes();
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ip, porta);
         socket.send(packet);
@@ -93,7 +93,7 @@ public class UdpServer {
         try {
             for (int i = 0; i < 5; i++) {
                 if (!mensagensPendentes.containsKey(id)) return;
-                sendMensage(mensagem, dest.ip, dest.porta);
+                sendMessage(mensagem, dest.ip, dest.porta);
                 Thread.sleep(2000);
                 System.out.println("[Tentativa] Reenviando TALK para " + dest.nome);
             }
@@ -147,7 +147,7 @@ public class UdpServer {
                 String id = UUID.randomUUID().toString();
                 long tamanho = arquivo.length();
                 String msgFile = "FILE " + id + " " + arquivo.getName() + " " + tamanho;
-                sendMensage(msgFile, dest.ip, dest.porta);
+                sendMessage(msgFile, dest.ip, dest.porta);
 
                 try (FileInputStream fis = new FileInputStream(arquivo)) {
                     byte[] buffer = new byte[512];
@@ -157,7 +157,7 @@ public class UdpServer {
                         byte[] dados = Arrays.copyOf(buffer, bytesLidos);
                         String base64 = Base64.getEncoder().encodeToString(dados);
                         String msgChunk = "CHUNK " + id + " " + seq + " " + base64;
-                        sendMensage(msgChunk, dest.ip, dest.porta);
+                        sendMessage(msgChunk, dest.ip, dest.porta);
                         Thread.sleep(100);
                         seq++;
                     }
@@ -165,7 +165,7 @@ public class UdpServer {
 
                 String hash = calcularHash(arquivo);
                 String msgEnd = "END " + id + " " + hash;
-                sendMensage(msgEnd, dest.ip, dest.porta);
+                sendMessage(msgEnd, dest.ip, dest.porta);
                 System.out.println("[+] Arquivo enviado com sucesso.");
             } catch (Exception e) {
                 e.printStackTrace();
