@@ -34,6 +34,11 @@ public class MensageHandler { // quem vai processar as mensagens recebidas via u
                 String id = partes[1];
                 String hash = partes[2];
                 server.finalizarRecepcaoArquivo(id, hash);
+            } else if (msg.startsWith("NACK")) {
+                String[] partes = msg.split(" ", 3);
+                String id = partes[1];
+                String motivo = partes.length > 2 ? partes[2] : "";
+                System.err.println("[ERRO] NACK recebido para " + id + ": " + motivo);
             }
         } catch (Exception e) {
             System.err.println("Erro ao receber pacote: " + e.getMessage());
