@@ -33,7 +33,7 @@ public class UdpServer {
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                 socket.receive(packet);
                 String msg = new String(packet.getData(), 0, packet.getLength());
-                MensageHandler.processar(msg, packet.getAddress(), packet.getPort(), this);
+                MessageHandler.processar(msg, packet.getAddress(), packet.getPort(), this);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -224,7 +224,6 @@ public class UdpServer {
     private static class RecepcaoArquivo {
         String nomeArquivo;
         Map<Integer, byte[]> blocos = new TreeMap<>();
-        //String hashEsperado;
         InetAddress ipDestino;
         int portaDestino;
 

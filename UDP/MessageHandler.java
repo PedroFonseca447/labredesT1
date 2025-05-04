@@ -1,6 +1,6 @@
 import java.net.*;
 import java.util.Base64;
-public class MensageHandler { // quem vai processar as mensagens recebidas via udp
+public class MessageHandler { // quem vai processar as mensagens recebidas via udp
     
     public static void processar ( String msg, InetAddress address, int port, UdpServer server){
         try {
