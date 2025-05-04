@@ -71,6 +71,11 @@ public class UdpServer {
         socket.send(packet);
     }
 
+    public void registerHeartbeat(String nome, InetAddress ip, int porta) {
+        dispositivos.put(nome, new DeviceInfo(nome, ip, porta, System.currentTimeMillis()));
+        System.out.println("[+] HEARTBEAT de " + nome);
+    }
+
     public void sendMessage(String mensagem, InetAddress ip, int porta) throws IOException {
         byte[] buffer = mensagem.getBytes();
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ip, porta);
@@ -107,11 +112,6 @@ public class UdpServer {
     public void receiveAckId(String id) {
         mensagensPendentes.remove(id);
         System.out.println("[ACK] Mensagem confirmada: " + id);
-    }
-
-    public void registerHeartBeat(String nome, InetAddress ip, int porta) {
-        dispositivos.put(nome, new DeviceInfo(nome, ip, porta, System.currentTimeMillis()));
-        System.out.println("[+] HEARTBEAT de " + nome);
     }
 
     public void comandProcess(String input) {

@@ -6,7 +6,7 @@ public class MessageHandler { // quem vai processar as mensagens recebidas via u
         try {
             if(msg.startsWith("HEARTBEAT")){
                 String nome = msg.split(" ", 2)[1];//[] é o nome de quem enviou
-                server.registerHeartBeat(nome, address, port);//registra o dispositivo
+                server.registerHeartbeat(nome, address, port);//registra o dispositivo
             }
             else if( msg.startsWith("TALK")){
                 String[] talkMessage = msg.split(" ",3);
